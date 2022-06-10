@@ -16,6 +16,9 @@ export const Layout: React.FC = ({ children }) => {
             <Link to="/">Home</Link>
           </li>
           <li>
+            <Link to="/posts">Posts</Link>
+          </li>
+          <li>
             <Link to="/login">Login</Link>
           </li>
           <li>

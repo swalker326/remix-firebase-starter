@@ -1,4 +1,3 @@
-import type { Request } from "@remix-run/node";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 import { getSessionToken, signOutFirebase, adminAuth } from "~/utils/db.server";
@@ -59,6 +58,7 @@ async function destroySession(request: Request) {
 
 async function signOut(request: Request) {
   await signOutFirebase();
+  console.log("signed out, destroying sessiong"); //eslint disable line #DEBUG LOG#
   return await destroySession(request);
 }
 

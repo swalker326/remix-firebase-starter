@@ -34,6 +34,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 const adminAuth = admin.auth();
+const storage = admin.storage();
 
 let Firebase: App;
 
@@ -66,4 +67,12 @@ async function signOutFirebase() {
   await signOut(getAuth());
 }
 
-export { db, signUp, getSessionToken, signOutFirebase, signIn, adminAuth };
+export {
+  db,
+  adminAuth,
+  storage,
+  signUp,
+  getSessionToken,
+  signOutFirebase,
+  signIn,
+};
