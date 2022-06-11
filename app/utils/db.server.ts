@@ -1,10 +1,7 @@
 import admin from "firebase-admin";
 import type { App, ServiceAccount } from "firebase-admin/app";
 import serviceAccount from "../../remix-starter-adminsdk.json";
-import {
-  applicationDefault,
-  initializeApp as initializeAdminApp,
-} from "firebase-admin/app";
+import { initializeApp as initializeAdminApp } from "firebase-admin/app";
 import { getApps, initializeApp } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
@@ -28,6 +25,7 @@ const firebaseConfig = {
 if (!admin.apps.length) {
   initializeAdminApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount),
+    storageBucket: "remix-starter.appspot.com",
     databaseURL: "https://remix-starter.firebaseio.com",
   });
 }
