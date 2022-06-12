@@ -1,11 +1,11 @@
-import { ActionFunction, json } from "@remix-run/node";
+import { ActionFunction, json, LoaderFunction } from "@remix-run/node";
 import {
   unstable_composeUploadHandlers,
   unstable_createFileUploadHandler,
   unstable_createMemoryUploadHandler,
 } from "@remix-run/node";
 import { unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import { storage } from "~/utils/db.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -14,15 +14,14 @@ export const action: ActionFunction = async ({ request }) => {
       maxPartSize: 5_000_000,
       file: ({ filename }) => filename,
     }),
-    // parse everything else into memory
     unstable_createMemoryUploadHandler()
   );
   const formData = await unstable_parseMultipartFormData(
     request,
-    uploadHandler // <-- we'll look at this deeper next
+    uploadHandler
   );
-  const bucket = storage.bucket("gs://remix-starter.appspot.com"); // should be your bucket name
 
+  const bucket = storage.bucket(process.env.storageBucket);
   let fileUrl = {
     imageUrl: "",
     errors: "no image uploaded",
@@ -35,25 +34,35 @@ export const action: ActionFunction = async ({ request }) => {
     metadata: { contentType: file.type },
   });
 
-  blobStream
-    .on("finish", () => {
-      fileUrl = {
-        imageUrl: `https://storage.googleapis.com/${bucket.name}/${blob.name}`,
-        errors: "",
-      };
-    })
-    .end(fileBuffer);
+  await new Promise((resolve, reject) =>
+    blobStream
+      .on("finish", () => {})
+      .on("error", (error) => {
+        reject(`Error: ${error}`);
+      })
+      .end(fileBuffer, async () => {
+        await blob.makePublic();
+        resolve(fileUrl);
+        fileUrl = {
+          imageUrl: blob.publicUrl(),
+          errors: "",
+        };
+      })
+  );
 
   return json({ ...fileUrl });
 };
 
 export default function () {
   const actionData = useActionData();
-  // console.log("loaderData :", loaderData); //eslint disable line #DEBUG LOG#
+  const imageUrl = actionData?.imageUrl ? actionData.imageUrl : null;
+
   return (
     <div>
       Upload a file to a firebase bucket
-      {/* {!!imageUrl && <img src={imageUrl} alt="uploaded" />} */}
+      {!!imageUrl && (
+        <img style={{ maxWidth: "500px" }} src={imageUrl} alt="uploaded" />
+      )}
       <Form method="post" encType="multipart/form-data">
         <input type="file" name="my-file" />
         <button type="submit">Upload</button>
