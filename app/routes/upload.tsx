@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
         reject(`Error: ${error}`);
       })
       .end(fileBuffer, async () => {
-        // await blob.makePublic();
+        await blob.makePublic();
         resolve(fileUrl);
         fileUrl = {
           imageUrl: blob.publicUrl(),
