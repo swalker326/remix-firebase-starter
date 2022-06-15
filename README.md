@@ -2,18 +2,28 @@
 
 - [Remix Docs](https://remix.run/docs)
 
-## Development
-
 ## Setup
+
+This is a starter codebase for using firebase with remix. It implments Firestore, storage and Auth. 
 
 ```sh
 npx firebase init
 ```
 
-select Firestore
-select emulators
+select `Firestore` and `Storage` from the options list
 
-Everything else is default settings
+Everything else is default settings or whatever settings you need for your project.
+
+Add a service account to your Firebase project. This will download a json, you can name this json file whatever you want, and place it in the root project directory. 
+
+Whatever you name your json file should be reflected in your env under the GOOGLE_APPLICATION_CREDENTIALS key
+
+#### be sure NOT to commit this json
+Setting up a service account
+
+https://firebase.google.com/support/guides/service-accounts
+
+Rename .env.sample to .env copy your API details and update the GOOGLE_APPLICATION_CREDENTIALS key to the path of your .json file. 
 
 From your terminal:
 
