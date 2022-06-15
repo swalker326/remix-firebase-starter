@@ -4,6 +4,8 @@
 
 ## Setup
 
+Click "Use this template" to make your own repo from this one.
+
 This is a starter codebase for using firebase with remix. It implments Firestore, storage and Auth. 
 
 ```sh
